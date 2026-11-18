@@ -354,7 +354,11 @@ export function ExploreMap() {
         paddingBottomRight: [24, 24],
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY;
+      const cartoTiles = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+      const tileUrl = cartoKey ? `${cartoTiles}?key=${encodeURIComponent(cartoKey)}` : cartoTiles;
+
+      L.tileLayer(tileUrl, {
         maxZoom: 20,
         subdomains: "abcd",
         attribution: "&copy; OpenStreetMap contributors &copy; CARTO",

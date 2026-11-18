@@ -348,12 +348,6 @@ export function ExploreMap() {
         attributionControl: true,
       });
 
-      map.fitBounds(detroitBounds, {
-        animate: false,
-        paddingTopLeft: [24, 24],
-        paddingBottomRight: [24, 24],
-      });
-
       const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY;
       const cartoTiles = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
       const tileUrl = cartoKey ? `${cartoTiles}?key=${encodeURIComponent(cartoKey)}` : cartoTiles;

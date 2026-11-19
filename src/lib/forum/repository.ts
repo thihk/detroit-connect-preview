@@ -247,7 +247,6 @@ async function readLocalStore(): Promise<LocalForumStore> {
     }
 
     const initialStore: LocalForumStore = { posts: defaultPosts, comments: defaultComments, likes: [] };
-    await writeLocalStore(initialStore);
     return initialStore;
   }
 }

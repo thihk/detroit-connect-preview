@@ -123,7 +123,6 @@ async function readLocalStore(seedWithSamples: boolean) {
     }
 
     const seeded = seedWithSamples ? sampleConnectors.map(seedRecordFromSample) : [];
-    await writeLocalStore(seeded);
     return seeded;
   }
 }

@@ -236,17 +236,14 @@ async function readLocalStore(): Promise<LocalMessageStore> {
     };
     if (normalized.messages.length === 0) {
       const seeded = structuredClone(defaultLocalMessageStore);
-      await writeLocalStore(seeded);
       return seeded;
     }
     if (JSON.stringify(normalized) !== JSON.stringify(store)) {
-      await writeLocalStore(normalized);
     }
     return normalized;
   } catch (error) {
     if (!(error instanceof Error) || !("code" in error) || error.code !== "ENOENT") throw error;
     const initial = structuredClone(defaultLocalMessageStore);
-    await writeLocalStore(initial);
     return initial;
   }
 }

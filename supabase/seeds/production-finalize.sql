@@ -1,6 +1,15 @@
 -- Detroit Connect production finalization: saved places + moderation reports.
 -- Safe to run once in Supabase SQL Editor.
 
+-- Supabase projects created through SQL Editor may not retain the default
+-- PostgREST table grants. RLS still controls every row after these grants.
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on public.user_profiles to authenticated;
+grant select on public.connector_profiles to anon, authenticated;
+grant select, insert, update, delete on public.friendships to authenticated;
+grant select, insert, update, delete on public.favorite_profiles to authenticated;
+grant select, insert, update, delete on public.user_settings to authenticated;
+
 create table if not exists public.favorite_places (
   user_id uuid not null references public.user_profiles(id) on delete cascade,
   place_id text not null,
@@ -28,6 +37,8 @@ create table if not exists public.moderation_reports (
 );
 alter table public.moderation_reports enable row level security;
 create index if not exists moderation_reports_status_idx on public.moderation_reports(status, created_at desc);
+grant select, insert, update on public.favorite_places to authenticated;
+grant select, insert, update on public.moderation_reports to authenticated;
 drop policy if exists "Users can submit reports" on public.moderation_reports;
 create policy "Users can submit reports" on public.moderation_reports for insert to authenticated with check (reporter_id = auth.uid());
 drop policy if exists "Reporters can view their reports" on public.moderation_reports;

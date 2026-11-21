@@ -1,6 +1,6 @@
 # Detroit Connect Project Handoff
 
-Last updated: July 24, 2026
+Last updated: November 21, 2026
 
 This file is the continuation guide for a new ChatGPT/Codex session. It contains
 no passwords, API keys, OAuth secrets, or private user data.
@@ -9,7 +9,7 @@ no passwords, API keys, OAuth secrets, or private user data.
 
 The active application is:
 
-`/Users/saanchiagarwal/Documents/Think Technologies/detroit-connect-app`
+`/Users/harold/Documents/ChatGPT/Connect Detroit/repo`
 
 Do not continue development in the older HTML experiment folders. They are
 visual history and references, not the production application.
@@ -154,7 +154,15 @@ lead to that person's public profile.
 
 ### Favorites
 
-Favorites currently save connector profiles, not map locations.
+Favorites save connector profiles and map places. Map-place persistence requires
+the `favorite_places` table from `supabase/seeds/production-finalize.sql`.
+
+### Authentication and recovery
+
+`/login`, `/signup`, and `/forgot-password` are separate production routes.
+After a failed sign-in, the entered email is carried into the reset form. A
+successful auth session is not discarded if optional profile synchronization
+encounters an RLS issue.
 
 ### Friends and Recommendations
 
@@ -178,6 +186,22 @@ Forum users can:
 - Share a post link.
 
 Avoid adding extra explanatory headings or cluttering post actions.
+
+## Production handoff status
+
+The latest production code is on `main` and deployed at:
+`https://detroit-connect-preview.vercel.app`
+
+Verified locally with `npm run lint`, `npx tsc --noEmit --pretty false`,
+`git diff --check`, and `npm run build`. Public smoke checks returned HTTP 200
+for the primary routes. The Playwright wrapper can hang while starting its
+managed dev server in this environment; starting Next directly on port 5202
+works, so rerun the suite on the next engineer's machine/CI.
+
+Before launch, run `supabase/seeds/production-finalize.sql` again so the table
+grants at the top are applied, then verify the authenticated flows with a real
+account. The approved knowledge-source indexing endpoint still needs its
+one-time production run using `KNOWLEDGE_INDEX_SECRET`.
 
 ### Explore Detroit
 

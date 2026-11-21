@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SearchX } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { ConnectorSearchInput } from "@/components/connector-search-input";
 import { ProfileSnapshot } from "@/components/profile-snapshot";
@@ -49,6 +50,7 @@ export default async function ConnectorsPage({ searchParams }: ConnectorsPagePro
     getConnectorFilterOptions(),
   ]);
   const { connectors, page, total, totalPages } = results;
+  const hasSearchFilters = Boolean(query || type !== "all" || params.language || params.neighborhood || params.topic);
   const favoriteIds = new Set(await getFavoriteConnectorIds(user));
   const redirectParams = new URLSearchParams();
 
@@ -131,7 +133,7 @@ export default async function ConnectorsPage({ searchParams }: ConnectorsPagePro
         </form>
       </section>
       <section className="connector-grid" aria-label="Connector results">
-        {connectors.map((connector) => (
+        {connectors.length > 0 ? connectors.map((connector) => (
           <ProfileSnapshot
             connector={connector}
             isHighlighted={connector.id === createdId}
@@ -141,12 +143,29 @@ export default async function ConnectorsPage({ searchParams }: ConnectorsPagePro
             showProfileKind
             showSaveAction
           />
-        ))}
+        )) : (
+          <div className="connector-empty-state" role="status">
+            <span className="connector-empty-state-icon" aria-hidden="true">
+              <SearchX size={24} strokeWidth={1.8} />
+            </span>
+            <span className="eyebrow">Directory search</span>
+            <h2>{hasSearchFilters ? "No matching connectors yet" : "No published connectors yet"}</h2>
+            <p>
+              {hasSearchFilters
+                ? "Try a broader neighborhood, topic, language, or service. You can also ask Detroit Connect in plain language."
+                : "Published connector profiles will appear here as local people and organizations join Detroit Connect."}
+            </p>
+            <div className="connector-empty-state-actions">
+              <Link className="button-primary" href="/">Ask Detroit Connect</Link>
+              {hasSearchFilters ? <Link className="button-secondary" href="/connectors">Clear search</Link> : null}
+            </div>
+          </div>
+        )}
       </section>
       <nav className="result-pagination" aria-label="Connector results pagination">
         <span>
           {total === 0
-            ? "No profiles found"
+            ? hasSearchFilters ? "No matching connectors" : "Directory is ready for published profiles"
             : `Showing ${(page - 1) * results.pageSize + 1}–${Math.min(page * results.pageSize, total)} of ${total}`}
         </span>
         {totalPages > 1 ? (

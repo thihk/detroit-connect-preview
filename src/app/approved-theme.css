@@ -9089,6 +9089,98 @@ textarea:disabled {
   }
 }
 
+/* Mobile polish: keep search, cards, and map controls comfortable on phones. */
+@media (max-width: 820px) {
+  .connectors-page,
+  .ai-search-page,
+  .favorites-page,
+  .network-page,
+  .messages-page,
+  .notifications-page {
+    padding-top: 94px;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+
+  .connectors-page .page-hero,
+  .ai-search-page .page-hero {
+    gap: 16px;
+  }
+
+  .connectors-page .page-hero h1,
+  .ai-search-page .page-hero h1 {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+
+  .connectors-page .results-search {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .connectors-page .results-search button {
+    min-height: 48px;
+  }
+
+  .connectors-page .connector-filter-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .connectors-page .connector-empty-state {
+    min-height: 270px;
+    padding: 28px 18px;
+  }
+
+  .connectors-page .connector-empty-state-actions,
+  .connectors-page .connector-empty-state-actions a {
+    width: 100%;
+  }
+
+  .connectors-page .result-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .explore-shell .map-search {
+    width: calc(100% - 28px);
+    margin: 12px auto;
+  }
+
+  .explore-shell .map-controls {
+    right: 14px;
+    bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+
+  .explore-shell .zoom-status {
+    right: 14px;
+    bottom: calc(132px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 520px) {
+  .connectors-page .page-hero,
+  .ai-search-page .page-hero {
+    margin-bottom: 18px;
+  }
+
+  .connectors-page .connector-empty-state h2 {
+    font-size: 22px;
+  }
+
+  .connectors-page .connector-empty-state p {
+    font-size: 13px;
+  }
+
+  .explore-shell .map-console,
+  .explore-shell .map-stage,
+  .explore-shell .leaflet-map {
+    min-height: calc(100svh - 70px);
+    height: calc(100svh - 70px);
+  }
+}
+
 /* Search suggestions: shared connector lookup and Explore Detroit place finder. */
 
 .connector-search-autocomplete {

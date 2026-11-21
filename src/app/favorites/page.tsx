@@ -4,6 +4,7 @@ import { ProfileSnapshot } from "@/components/profile-snapshot";
 import { getCurrentUser } from "@/lib/auth/user";
 import { getConnectorCardsByIds } from "@/lib/connectors/repository";
 import { getFavoriteConnectorIds } from "@/lib/favorites/repository";
+import { getFavoritePlaces } from "@/lib/favorites/places";
 import { getRecommendationsYouMade } from "@/lib/friends/repository";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -12,9 +13,9 @@ export const dynamic = "force-dynamic";
 export default async function FavoritesPage() {
   const user = await getCurrentUser();
   const needsSignIn = isSupabaseConfigured() && !user;
-  const [favoriteIds, recommendations] = needsSignIn
-    ? [[], []]
-    : await Promise.all([getFavoriteConnectorIds(user), getRecommendationsYouMade(user)]);
+  const [favoriteIds, recommendations, places] = needsSignIn
+    ? [[], [], []]
+    : await Promise.all([getFavoriteConnectorIds(user), getRecommendationsYouMade(user), getFavoritePlaces(user)]);
   const connectors = await getConnectorCardsByIds(favoriteIds);
 
   return (
@@ -29,8 +30,21 @@ export default async function FavoritesPage() {
           <p>Favorites are saved to your account.</p>
           <Link href="/login?next=/favorites">Sign in</Link>
         </section>
-      ) : connectors.length > 0 || recommendations.length > 0 ? (
+      ) : connectors.length > 0 || recommendations.length > 0 || places.length > 0 ? (
         <div className="favorites-content">
+          {places.length > 0 ? (
+            <section aria-labelledby="saved-places-title">
+              <div className="favorites-section-heading"><h2 id="saved-places-title">Saved places</h2><span>{places.length}</span></div>
+              <div className="saved-place-list" aria-label="Saved Detroit places">
+                {places.map((place) => (
+                  <Link className="saved-place-row" href={`/explore?place=${encodeURIComponent(place.place_id)}`} key={place.place_id}>
+                    <span className="saved-place-row-copy"><strong>{place.place_name}</strong><small>{place.category}</small></span>
+                    <span aria-hidden="true">View on map →</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
           {connectors.length > 0 ? (
             <section aria-labelledby="saved-profiles-title">
               <div className="favorites-section-heading"><h2 id="saved-profiles-title">Saved profiles</h2><span>{connectors.length}</span></div>

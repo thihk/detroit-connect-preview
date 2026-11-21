@@ -1223,6 +1223,41 @@ a:focus-visible {
   }
 }
 
+.saved-place-list {
+  display: grid;
+  gap: 10px;
+}
+
+.saved-place-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.saved-place-row:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-primary);
+}
+
+.saved-place-row-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.saved-place-row-copy strong {
+  color: var(--color-text);
+}
+
+.saved-place-row-copy small {
+  text-transform: capitalize;
+}
+
 /* AI search results */
 
 .ai-search-page {

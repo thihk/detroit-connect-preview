@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 const topicFilters = ["All", "Housing", "Schools", "Business", "Moving", "City Services"];
 
 type ForumPageProps = {
-  searchParams: Promise<{ topic?: string; error?: string; posted?: string; commented?: string }>;
+  searchParams: Promise<{ topic?: string; error?: string; posted?: string; commented?: string; reported?: string }>;
 };
 
 export default async function ForumPage({ searchParams }: ForumPageProps) {
@@ -39,6 +39,7 @@ export default async function ForumPage({ searchParams }: ForumPageProps) {
       <AppHeader />
       <section className="forum-hero" aria-labelledby="forum-title">
         <h1 id="forum-title">Ask & Answer</h1>
+        {params.reported === "1" ? <div className="page-notice" role="status">Thanks. Your report was submitted for moderator review.</div> : null}
       </section>
 
       <section className="forum-layout" aria-label="Community forum">

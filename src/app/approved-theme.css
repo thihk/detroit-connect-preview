@@ -9883,6 +9883,19 @@ textarea:disabled {
   margin-top: 25px;
 }
 
+/* Accessibility baseline: readable UI text is never smaller than 12pt/16px. */
+body {
+  font-size: 16px;
+}
+
+body :where(p, a, button, input, select, textarea, label, li, dt, dd, small, summary, figcaption, caption, th, td, span) {
+  font-size: max(16px, 1em);
+}
+
+body :where(p, li, dd, small, figcaption, caption, th, td) {
+  line-height: 1.45;
+}
+
 @media (max-width: 1120px) and (min-width: 821px) {
   .view-home .ai-search {
     width: calc(100% + clamp(220px, 24vw, 300px));

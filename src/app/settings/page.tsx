@@ -43,7 +43,18 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
   const params = await searchParams;
   const user = await getCurrentUser();
   const needsSignIn = isSupabaseConfigured() && !user;
-  const preferences = await getNotificationPreferences(user);
+  let preferences = {
+    connectionRequests: true,
+    directMessages: true,
+    forumReplies: true,
+    recommendations: true,
+  };
+  try {
+    preferences = await getNotificationPreferences(user);
+  } catch {
+    // Keep Settings usable when an older Supabase project has not yet received
+    // the optional preferences table or a transient read fails.
+  }
 
   return (
     <main className="page-shell settings-page">

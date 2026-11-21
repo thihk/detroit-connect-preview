@@ -93,7 +93,7 @@ export async function signInAction(formData: FormData) {
   });
 
   if (error || !data.user) {
-    loginRedirect({ error: error?.message ?? "Could not sign in." });
+    loginRedirect({ error: error?.message ?? "Could not sign in.", email: parsed.data.email });
   }
 
   await ensureUserProfile(supabase, data.user);

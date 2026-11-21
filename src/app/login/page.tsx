@@ -3,7 +3,7 @@ import { signInAction, signInWithGoogleAction } from "@/app/login/actions";
 import { AppHeader } from "@/components/app-header";
 
 type LoginPageProps = {
-  searchParams: Promise<{ error?: string; message?: string; next?: string }>;
+  searchParams: Promise<{ error?: string; message?: string; next?: string; email?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -52,7 +52,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </button>
         </form>
 
-        <Link className="auth-link" href={`/forgot-password?next=${encodeURIComponent(next)}`}>Forgot your password?</Link>
+        <Link className="auth-link" href={`/forgot-password?next=${encodeURIComponent(next)}${params.email ? `&email=${encodeURIComponent(params.email)}` : ""}`}>Forgot your password?</Link>
         <p className="auth-switch">New to Detroit Connect? <Link href={`/signup?next=${encodeURIComponent(next)}`}>Create an account</Link></p>
 
         <Link className="auth-link" href="/">

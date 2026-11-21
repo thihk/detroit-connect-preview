@@ -100,3 +100,30 @@ Before client delivery, test with two real accounts in separate browser sessions
 3. Send, accept, decline, and cancel friend requests.
 4. Recommend a connector and confirm it appears for the accepted friend.
 5. Publish a forum post and confirm its author name is visible publicly.
+
+## Production readiness runbook
+
+The production schema additions for saved map places and moderation are bundled
+in `supabase/seeds/production-finalize.sql`. Run that file once in the target
+Supabase project's SQL Editor. It is idempotent and enables the required RLS
+policies.
+
+After the migration, configure these Vercel Production variables:
+
+- `OPENAI_API_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (server-only secret)
+- `KNOWLEDGE_INDEX_SECRET` (server-only secret)
+
+Then index the approved source registry from a terminal. Do not put the secret
+in browser code or commit it:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $KNOWLEDGE_INDEX_SECRET" \
+  https://detroit-connect-preview.vercel.app/api/admin/knowledge/index
+```
+
+Finally, assign the designated moderator an `admin` role in `public.user_profiles`
+and verify the saved-place, report, AI search, and sign-in flows with a real
+account. The public site is available at
+`https://detroit-connect-preview.vercel.app`.

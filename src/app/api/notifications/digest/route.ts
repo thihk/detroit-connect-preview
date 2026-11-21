@@ -8,7 +8,9 @@ export const dynamic = "force-dynamic";
 type DigestUser = { id: string; email: string; display_name: string | null };
 
 function authorized(request: Request) {
-  const expected = process.env.NOTIFICATION_CRON_SECRET;
+  // Vercel Cron sends CRON_SECRET automatically. Keep the explicit
+  // notification secret as a fallback for manual or external schedulers.
+  const expected = process.env.CRON_SECRET ?? process.env.NOTIFICATION_CRON_SECRET;
   const received = request.headers.get("authorization");
   return Boolean(expected && received === `Bearer ${expected}`);
 }

@@ -14,6 +14,8 @@ export async function submitReportAction(formData: FormData) {
   if (isSupabaseConfigured() && !user) redirect(`/login?next=/forum#post-${encodeURIComponent(targetId)}`);
   if (isSupabaseConfigured() && user && ["forum_post", "forum_comment", "profile"].includes(targetType)) {
     const supabase = await createClient();
+    // The table is introduced by the production migration and is not in the checked-in generated Supabase types yet.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabase.from("moderation_reports" as never) as any).insert({ reporter_id: user.id, target_type: targetType, target_id: targetId, reason });
   }
   revalidatePath("/forum");
@@ -28,6 +30,8 @@ export async function updateReportStatusAction(formData: FormData) {
   const supabase = await createClient();
   const profile = await supabase.from("user_profiles").select("role").eq("id", user.id).maybeSingle();
   if (profile.data?.role === "admin") {
+    // The table is introduced by the production migration and is not in the checked-in generated Supabase types yet.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabase.from("moderation_reports" as never) as any).update({ status, reviewer_id: user.id, reviewed_at: new Date().toISOString() }).eq("id", reportId);
   }
   revalidatePath("/admin/reports");

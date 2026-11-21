@@ -15,6 +15,8 @@ export default async function ReportsPage() {
   if (profile.data?.role !== "admin") {
     return <main className="page-shell"><AppHeader /><section className="empty-panel"><strong>Admin access required</strong><p>Only designated moderators can review reports.</p><Link href="/">Go home</Link></section></main>;
   }
+  // The table is introduced by the production migration and is not in the checked-in generated Supabase types yet.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reports = await (supabase.from("moderation_reports" as never) as any).select("id,target_type,target_id,reason,details,status,created_at").order("created_at", { ascending: false }).limit(100);
   return (
     <main className="page-shell admin-reports-page">

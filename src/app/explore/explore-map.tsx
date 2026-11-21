@@ -411,7 +411,7 @@ export function ExploreMap({ initialPlaceId = defaultPlaceId }: { initialPlaceId
       markerLayerRef.current = null;
       markersRef.current = {};
     };
-  }, []);
+  }, [selectedInitialPlaceId]);
 
   useEffect(() => {
     const L = leafletRef.current;
@@ -435,7 +435,7 @@ export function ExploreMap({ initialPlaceId = defaultPlaceId }: { initialPlaceId
         markerLayerRef.current!.removeLayer(marker);
       }
     });
-  }, [activeFilter, activePlaceId, mapReady]);
+  }, [activeFilter, activePlaceId, mapReady, selectedInitialPlaceId]);
 
   useEffect(() => {
     if (!mapRef.current) return;

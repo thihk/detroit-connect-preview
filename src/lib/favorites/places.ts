@@ -12,6 +12,8 @@ export async function getFavoritePlaces(user?: User | null): Promise<FavoritePla
   if (!user) return [];
   try {
     const supabase = await createClient();
+    // The table is introduced by the production migration and is not in the checked-in generated Supabase types yet.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const table = supabase.from("favorite_places" as never) as any;
     const { data, error } = await table
       .select("place_id,place_name,category,created_at")

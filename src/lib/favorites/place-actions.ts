@@ -15,6 +15,8 @@ export async function toggleFavoritePlaceAction(formData: FormData) {
   if (isSupabaseConfigured() && !user) redirect("/login?next=/explore");
   if (isSupabaseConfigured() && user) {
     const supabase = await createClient();
+    // The table is introduced by the production migration and is not in the checked-in generated Supabase types yet.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const table = supabase.from("favorite_places" as never) as any;
     const existing = await table.select("place_id").eq("user_id", user.id).eq("place_id", placeId).maybeSingle();
     if (existing.data) await table.delete().eq("user_id", user.id).eq("place_id", placeId);

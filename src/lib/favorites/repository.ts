@@ -48,7 +48,10 @@ async function getSupabaseFavorites(user?: User | null) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    throw new Error(`Could not load favorites: ${error.message}`);
+    // Favorites are optional enrichment for the directory. If an older
+    // Supabase project has not applied its favorite_profiles grants yet,
+    // keep the directory and login redirect usable with no saved profiles.
+    return [];
   }
 
   const favorites = data as Array<{ connector_profile_id: string }>;

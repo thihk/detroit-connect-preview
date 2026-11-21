@@ -13,6 +13,13 @@ export default async function MyProfilePage() {
     redirect("/login?next=/profile");
   }
 
-  const profileId = await getOwnedConnectorProfileId(user?.id ?? LOCAL_DEMO_USER_ID);
+  let profileId: string | null = null;
+  try {
+    profileId = await getOwnedConnectorProfileId(user?.id ?? LOCAL_DEMO_USER_ID);
+  } catch {
+    // A new account may not have a connector profile yet, and a transient
+    // database read failure should lead to the recoverable setup flow.
+    redirect("/create-profile");
+  }
   redirect(profileId ? `/connectors/${profileId}` : "/create-profile");
 }

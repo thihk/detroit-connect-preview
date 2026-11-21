@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type * as Leaflet from "leaflet";
+import { Heart } from "lucide-react";
+import { toggleFavoritePlaceAction } from "@/lib/favorites/place-actions";
 
 const filters = [
   { value: "all", label: "All" },
@@ -659,6 +661,15 @@ export function ExploreMap() {
           <span>{activePlace.mood}</span>
           <span>{activePlace.bestFor}</span>
         </div>
+        <form action={toggleFavoritePlaceAction} className="place-save-form">
+          <input type="hidden" name="placeId" value={activePlace.id} />
+          <input type="hidden" name="placeName" value={activePlace.name} />
+          <input type="hidden" name="category" value={activePlace.category} />
+          <button type="submit" className="place-save-button">
+            <Heart aria-hidden="true" size={16} />
+            Save this place
+          </button>
+        </form>
       </aside>
     </section>
   );

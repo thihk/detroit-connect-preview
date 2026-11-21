@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { signInAction, signInWithGoogleAction, signUpAction } from "@/app/login/actions";
+import { signInAction, signInWithGoogleAction } from "@/app/login/actions";
 import { AppHeader } from "@/components/app-header";
 
 type LoginPageProps = {
@@ -9,7 +9,6 @@ type LoginPageProps = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const next = params.next ?? "/connectors";
-  const signUpNext = params.next ?? "/create-profile";
 
   return (
     <main className="page-shell auth-shell">
@@ -53,24 +52,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </button>
         </form>
 
-        <form className="auth-secondary" action={signUpAction}>
-          <input name="next" type="hidden" value={signUpNext} />
-          <label>
-            <span>Name</span>
-            <input autoComplete="name" maxLength={80} name="fullName" placeholder="Your name" required />
-          </label>
-          <label>
-            <span>New account email</span>
-            <input autoComplete="email" name="email" placeholder="you@example.com" required type="email" />
-          </label>
-          <label>
-            <span>Password</span>
-            <input autoComplete="new-password" minLength={8} name="password" required type="password" />
-          </label>
-          <button className="secondary-button" type="submit">
-            Create account
-          </button>
-        </form>
+        <Link className="auth-link" href={`/forgot-password?next=${encodeURIComponent(next)}`}>Forgot your password?</Link>
+        <p className="auth-switch">New to Detroit Connect? <Link href={`/signup?next=${encodeURIComponent(next)}`}>Create an account</Link></p>
 
         <Link className="auth-link" href="/">
           Back to home

@@ -35,6 +35,11 @@ function loginRedirect(params: Record<string, string>): never {
   redirect(`/login?${search.toString()}`);
 }
 
+function signupRedirect(params: Record<string, string>): never {
+  const search = new URLSearchParams(params);
+  redirect(`/signup?${search.toString()}`);
+}
+
 function getAuthOrigin(requestOrigin: string | null) {
   const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   const origin = configuredSiteUrl || requestOrigin || "http://localhost:5200";
@@ -78,7 +83,7 @@ export async function signInAction(formData: FormData) {
   const parsed = getAuthFields(formData);
 
   if (!parsed.success) {
-    loginRedirect({ error: "Enter an email and a password with at least 8 characters." });
+    signupRedirect({ error: "Enter your name, email, and a password with at least 8 characters." });
   }
 
   const supabase = await getSupabaseForAuth();
@@ -116,7 +121,7 @@ export async function signUpAction(formData: FormData) {
   });
 
   if (error) {
-    loginRedirect({ error: error.message });
+    signupRedirect({ error: error.message });
   }
 
   if (data.user && data.session) {
@@ -124,5 +129,21 @@ export async function signUpAction(formData: FormData) {
     redirect(next);
   }
 
-  loginRedirect({ message: "Check your email to finish creating your account." });
+  signupRedirect({ message: "Check your email to finish creating your account." });
+}
+
+export async function resetPasswordAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim();
+  const parsed = z.email().safeParse(email);
+  if (!parsed.success) redirect("/forgot-password?error=Enter a valid email address.");
+
+  const headerStore = await headers();
+  const origin = getAuthOrigin(headerStore.get("origin"));
+  const supabase = await getSupabaseForAuth();
+  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
+    redirectTo: `${origin}/auth/callback?next=/profile/edit`,
+  });
+
+  if (error) redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
+  redirect("/forgot-password?message=If an account uses that email, a password reset link is on its way.");
 }

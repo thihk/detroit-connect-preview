@@ -582,6 +582,17 @@ select {
   font-weight: 800;
 }
 
+.auth-switch {
+  color: var(--muted-text, #607078);
+  margin: 1rem 0 0;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--deep-teal, #1f5362);
+  font-weight: 700;
+}
+
 .results-search {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 190px 120px;

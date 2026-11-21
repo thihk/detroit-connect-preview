@@ -22,7 +22,12 @@ export async function GET(request: Request) {
       );
     }
 
-    await ensureUserProfile(supabase, data.user);
+    try {
+      await ensureUserProfile(supabase, data.user);
+    } catch {
+      // Do not discard a valid OAuth session because profile synchronization
+      // is blocked by a separate database policy.
+    }
     return NextResponse.redirect(new URL(next, requestUrl.origin));
   } catch {
     return NextResponse.redirect(

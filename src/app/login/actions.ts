@@ -96,7 +96,14 @@ export async function signInAction(formData: FormData) {
     loginRedirect({ error: error?.message ?? "Could not sign in.", email: parsed.data.email });
   }
 
-  await ensureUserProfile(supabase, data.user);
+  // Auth is already successful; do not turn a secondary profile-sync/RLS
+  // issue into a misleading login failure. The database trigger keeps the
+  // account profile synchronized when configured.
+  try {
+    await ensureUserProfile(supabase, data.user);
+  } catch {
+    // Continue with the authenticated session.
+  }
   redirect(safeNextPath(parsed.data.next));
 }
 
@@ -125,7 +132,11 @@ export async function signUpAction(formData: FormData) {
   }
 
   if (data.user && data.session) {
-    await ensureUserProfile(supabase, data.user);
+    try {
+      await ensureUserProfile(supabase, data.user);
+    } catch {
+      // Continue with the authenticated session; profile setup can repair it.
+    }
     redirect(next);
   }
 

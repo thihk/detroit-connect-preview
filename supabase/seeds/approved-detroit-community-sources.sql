@@ -1,5 +1,13 @@
 -- Broad starting registry for common Detroit-area needs.
 -- These are source hubs, not provider endorsements. Re-review before re-approval.
+alter table public.knowledge_sources
+  add column if not exists category text not null default 'general',
+  add column if not exists jurisdiction text not null default 'Detroit, Michigan',
+  add column if not exists publisher text,
+  add column if not exists review_notes text,
+  add column if not exists reviewed_at timestamptz,
+  add column if not exists expires_at timestamptz;
+
 insert into public.knowledge_sources
   (kind, title, source_url, status, category, jurisdiction, publisher, reviewed_at, review_notes)
 values

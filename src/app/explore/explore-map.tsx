@@ -17,7 +17,7 @@ const filters = [
   { value: "parks", label: "Parks" },
 ];
 
-const initialPlaceId = "downtown";
+const defaultPlaceId = "downtown";
 
 type Place = {
   id: string;
@@ -292,9 +292,10 @@ function zoomStatusFor(zoom: number) {
   return zoom >= 15 ? "Street detail" : zoom >= 13 ? "District detail" : "City view";
 }
 
-export function ExploreMap() {
+export function ExploreMap({ initialPlaceId = defaultPlaceId }: { initialPlaceId?: string }) {
+  const selectedInitialPlaceId = placeById[initialPlaceId] ? initialPlaceId : defaultPlaceId;
   const [activeFilter, setActiveFilter] = useState("all");
-  const [activePlaceId, setActivePlaceId] = useState(initialPlaceId);
+  const [activePlaceId, setActivePlaceId] = useState(selectedInitialPlaceId);
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -365,7 +366,7 @@ export function ExploreMap() {
         const isNeighborhood = isNeighborhoodMarker(id);
         const markerClass = isNeighborhood ? " marker-neighborhood" : ` marker-${placeById[id].category}`;
         return L.divIcon({
-          className: `detroit-marker${markerClass}${id === initialPlaceId ? " is-selected" : ""}`,
+          className: `detroit-marker${markerClass}${id === selectedInitialPlaceId ? " is-selected" : ""}`,
           html: isNeighborhood ? `<span></span>${placeById[id].name}` : "<span></span>",
           iconSize: undefined,
         });

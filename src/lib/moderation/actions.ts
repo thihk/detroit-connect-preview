@@ -19,3 +19,17 @@ export async function submitReportAction(formData: FormData) {
   revalidatePath("/forum");
   redirect(`/forum?reported=1#post-${encodeURIComponent(targetId)}`);
 }
+
+export async function updateReportStatusAction(formData: FormData) {
+  const reportId = String(formData.get("reportId") ?? "");
+  const status = String(formData.get("status") ?? "");
+  const user = await getCurrentUser();
+  if (!user || !isSupabaseConfigured() || !reportId || !["pending", "reviewing", "resolved", "dismissed"].includes(status)) redirect("/admin/reports");
+  const supabase = await createClient();
+  const profile = await supabase.from("user_profiles").select("role").eq("id", user.id).maybeSingle();
+  if (profile.data?.role === "admin") {
+    await (supabase.from("moderation_reports" as never) as any).update({ status, reviewer_id: user.id, reviewed_at: new Date().toISOString() }).eq("id", reportId);
+  }
+  revalidatePath("/admin/reports");
+  redirect("/admin/reports");
+}

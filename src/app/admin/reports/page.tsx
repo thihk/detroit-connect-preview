@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
 import { getCurrentUser } from "@/lib/auth/user";
 import { createClient } from "@/lib/supabase/server";
+import { updateReportStatusAction } from "@/lib/moderation/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function ReportsPage() {
       <section className="page-hero compact"><h1>Moderation reports</h1><p>Review community reports and follow the published moderation policy.</p></section>
       <section className="report-list" aria-label="Moderation reports">
         {(reports.data ?? []).length === 0 ? <div className="empty-panel"><strong>No reports yet</strong><p>New reports will appear here.</p></div> : (reports.data ?? []).map((report: { id: string; target_type: string; target_id: string; reason: string; status: string; created_at: string }) => (
-          <article className="report-row" key={report.id}><div><strong>{report.reason}</strong><span>{report.target_type} · {report.target_id}</span></div><span className={`report-status is-${report.status}`}>{report.status}</span><time dateTime={report.created_at}>{new Date(report.created_at).toLocaleString()}</time></article>
+          <article className="report-row" key={report.id}><div><strong>{report.reason}</strong><span>{report.target_type} · {report.target_id}</span></div><span className={`report-status is-${report.status}`}>{report.status}</span><time dateTime={report.created_at}>{new Date(report.created_at).toLocaleString()}</time><form action={updateReportStatusAction}><input name="reportId" type="hidden" value={report.id} /><select aria-label={`Update ${report.reason} report`} defaultValue={report.status} name="status"><option value="pending">Pending</option><option value="reviewing">Reviewing</option><option value="resolved">Resolved</option><option value="dismissed">Dismissed</option></select><button type="submit">Update</button></form></article>
         ))}
       </section>
     </main>

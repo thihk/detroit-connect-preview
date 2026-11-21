@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { KnowledgeMatch } from "@/lib/ai-search/types";
+import { getDemoKnowledge } from "@/lib/ai-search/demo-knowledge";
 
 type EmbeddingResponse = {
   data?: Array<{ embedding?: number[] }>;
@@ -50,10 +51,10 @@ async function createQueryEmbedding(query: string) {
 }
 
 export async function retrieveApprovedKnowledge(query: string, limit = 5): Promise<KnowledgeMatch[]> {
-  if (!isSupabaseConfigured()) return [];
+  if (!isSupabaseConfigured()) return getDemoKnowledge(query);
 
   const embedding = await createQueryEmbedding(query);
-  if (!embedding) return [];
+  if (!embedding) return getDemoKnowledge(query);
 
   try {
     const supabase = await createClient();
@@ -63,7 +64,7 @@ export async function retrieveApprovedKnowledge(query: string, limit = 5): Promi
       query_embedding: JSON.stringify(embedding),
     });
 
-    if (error || !data) return [];
+    if (error || !data || data.length === 0) return getDemoKnowledge(query);
 
     return (data as KnowledgeRpcRow[]).map((row) => ({
       id: row.chunk_id,
@@ -76,6 +77,6 @@ export async function retrieveApprovedKnowledge(query: string, limit = 5): Promi
       similarity: row.similarity,
     }));
   } catch {
-    return [];
+    return getDemoKnowledge(query);
   }
 }

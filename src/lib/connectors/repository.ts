@@ -383,7 +383,10 @@ async function fetchSupabaseRows() {
     return null;
   }
 
-  const { data, error } = await supabase.from("connector_profiles").select("*").eq("status", "published");
+  const { data, error } = await supabase
+    .from("public_connector_profiles")
+    .select("*")
+    .eq("status", "published");
 
   if (error) {
     throw new Error(`Could not load connector profiles: ${error.message}`);

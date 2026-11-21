@@ -10,6 +10,7 @@ import { createForumCommentAction, createForumPostAction, toggleForumPostLikeAct
 import { getForumPosts } from "@/lib/forum/repository";
 import { getFriendsDashboard } from "@/lib/friends/repository";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { submitReportAction } from "@/lib/moderation/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -127,6 +128,15 @@ export default async function ForumPage({ searchParams }: ForumPageProps) {
                   <ForumCommentComposer action={createForumCommentAction} postId={post.id} />
                 )}
                 <ShareButton friends={shareFriends} path={`/forum#post-${post.id}`} title={post.title} />
+                <details className="report-control">
+                  <summary>Report</summary>
+                  <form action={submitReportAction}>
+                    <input name="targetType" type="hidden" value="forum_post" />
+                    <input name="targetId" type="hidden" value={post.id} />
+                    <label><span>Reason</span><select name="reason" defaultValue="other"><option value="spam">Spam</option><option value="harassment">Harassment</option><option value="misinformation">Misinformation</option><option value="unsafe">Unsafe content</option><option value="other">Other</option></select></label>
+                    <button type="submit">Submit report</button>
+                  </form>
+                </details>
               </div>
               {post.comments.length > 0 ? <ForumCommentThread comments={post.comments} needsSignIn={needsSignIn} postId={post.id} /> : null}
             </article>
